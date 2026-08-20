@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CalmDesk — Study without the spiral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+  /* ============ TOKENS ============ */
+  :root{
+    --paper:      #EAEEE1;   /* pale sage paper background */
+    --paper-dim:  #DEE4D2;   /* slightly deeper sage, for alt sections */
+    --ink:        #232B22;  /* deep forest-charcoal ink */
+    --ink-soft:   #57624F;  /* muted secondary text */
+    --highlighter:#F2C14E;  /* golden highlighter accent, CTA / emphasis */
+    --coral:      #E2836B;  /* dusty coral, mood / stress accent, used sparingly */
+    --rule:       #B9C3AC;  /* notebook rule / divider line */
+    --card:       #F4F6EE;  /* index-card background */
+
+    --font-display: 'Space Mono', monospace;
+    --font-body: 'Work Sans', sans-serif;
+
+    --maxw: 1120px;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  img, svg{ display:block; max-width:100%; }
+
+  .wrap{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  .eyebrow{
+    font-family:var(--font-display);
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+
+  /* ============ NAV ============ */
+  header.site-nav{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:var(--paper);
+    border-bottom:1px solid var(--rule);
+  }
+
+  .nav-inner{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:20px 32px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+
+  .logo{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:20px;
+    letter-spacing:-0.02em;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .logo .dot{
+    width:10px; height:10px;
+    border-radius:50%;
+    background:var(--highlighter);
+    display:inline-block;
+    box-shadow:0 0 0 3px rgba(242,193,78,0.35);
+  }
+
+  nav.links{
+    display:flex;
+    gap:36px;
+    font-size:14px;
+    font-weight:500;
+  }
+  nav.links a{
+    position:relative;
+    padding-bottom:4px;
+    color:var(--ink);
+  }
+  nav.links a::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:2px;
+    background:var(--highlighter);
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform .2s ease;
+  }
+  nav.links a:hover::after{ transform:scaleX(1); }
+
+  .nav-cta{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--font-display);
+    font-size:13px;
+    padding:10px 18px;
+    border-radius:3px;
+  }
+
+  .nav-toggle{ display:none; }
+
+  /* ============ HERO ============ */
+  .hero{
+    padding:88px 0 96px;
+    border-bottom:1px solid var(--rule);
+  }
+  .hero-inner{
+    display:grid;
+    grid-template-columns:1.15fr 0.85fr;
+    gap:64px;
+    align-items:center;
+  }
+
+  h1.headline{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:clamp(38px, 5vw, 58px);
+    line-height:1.08;
+    letter-spacing:-0.01em;
+    margin:18px 0 24px;
+  }
+  h1.headline .mark{
+    background:linear-gradient(to top, var(--highlighter) 38%, transparent 38%);
+    padding:0 2px;
+  }
+
+  p.sub{
+    font-size:18px;
+    color:var(--ink-soft);
+    max-width:46ch;
+    margin-bottom:34px;
+  }
+
+  .cta-row{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+
+  .btn-primary{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:15px;
+    background:var(--ink);
+    color:var(--paper);
+    padding:16px 28px;
+    border-radius:3px;
+    display:inline-block;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .btn-primary:hover{ background:#31402d; transform:translateY(-2px); }
+
+  .cta-note{
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+
+  /* --- breathing circle: signature element --- */
+  .breathe-box{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:20px;
+  }
+
+  .breathe-ring-wrap{
+    position:relative;
+    width:220px;
+    height:220px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .ring{
+    position:absolute;
+    border-radius:50%;
+    border:1.5px solid var(--ink-soft);
+    opacity:0.35;
+  }
+  .ring.r1{ width:220px; height:220px; }
+  .ring.r2{ width:170px; height:170px; }
+
+  .breathe-core{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    background:radial-gradient(circle at 32% 28%, var(--card), var(--highlighter) 78%);
+    animation:breathe 8s ease-in-out infinite;
+    box-shadow:0 0 0 1px rgba(35,43,34,0.08);
+  }
+
+  @keyframes breathe{
+    0%   { transform:scale(0.72); }
+    45%  { transform:scale(1.18); }
+    50%  { transform:scale(1.18); }
+    95%  { transform:scale(0.72); }
+    100% { transform:scale(0.72); }
+  }
+
+  .breathe-label{
+    font-family:var(--font-display);
+    font-size:13px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    height:18px;
+    position:relative;
+    width:180px;
+    text-align:center;
+  }
+  .breathe-label span{
+    position:absolute;
+    left:0; right:0;
+    opacity:0;
+  }
+  .breathe-label .in{ animation:say-in 8s ease-in-out infinite; }
+  .breathe-label .out{ animation:say-out 8s ease-in-out infinite; }
+
+  @keyframes say-in{
+    0%,3%   { opacity:0; }
+    8%,42%  { opacity:1; }
+    47%,100%{ opacity:0; }
+  }
+  @keyframes say-out{
+    0%,47%  { opacity:0; }
+    53%,92% { opacity:1; }
+    97%,100%{ opacity:0; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .breathe-core, .breathe-label .in, .breathe-label .out{ animation:none; }
+    .breathe-label .in{ opacity:1; }
+  }
+
+  /* ============ SECTION HEADS ============ */
+  .section{ padding:88px 0; }
+  .section-head{
+    max-width:640px;
+    margin-bottom:52px;
+  }
+  .section-head h2{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:clamp(28px, 3.4vw, 38px);
+    margin-top:14px;
+    line-height:1.15;
+  }
+  .section-head p{
+    color:var(--ink-soft);
+    margin-top:14px;
+    font-size:16px;
+  }
+
+  /* ============ FEATURES (ruled-page list, not cards) ============ */
+  .features{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:0;
+    border-top:1px solid var(--rule);
+  }
+  .feature{
+    padding:32px 28px 32px 0;
+    border-bottom:1px dashed var(--rule);
+    border-right:1px solid var(--rule);
+  }
+  .feature:nth-child(3n){ border-right:none; }
+  .feature:first-child, .feature:nth-child(2), .feature:nth-child(3){ }
+
+  .feature-icon{
+    width:38px; height:38px;
+    border-radius:8px;
+    background:var(--card);
+    border:1px solid var(--rule);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:20px;
+    font-size:18px;
+  }
+  .feature h3{
+    font-family:var(--font-display);
+    font-size:18px;
+    margin-bottom:10px;
+  }
+  .feature p{
+    color:var(--ink-soft);
+    font-size:15px;
+  }
+
+  /* ============ HOW IT WORKS (real sequence -> numbered) ============ */
+  .how{
+    background:var(--paper-dim);
+  }
+  .steps{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:40px;
+    position:relative;
+  }
+  .steps::before{
+    content:"";
+    position:absolute;
+    top:19px;
+    left:8%;
+    right:8%;
+    height:1px;
+    background:var(--rule);
+  }
+  .step{
+    position:relative;
+  }
+  .step-num{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:14px;
+    width:38px; height:38px;
+    border-radius:50%;
+    background:var(--paper-dim);
+    border:1.5px solid var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:18px;
+    position:relative;
+    z-index:1;
+  }
+  .step h3{
+    font-family:var(--font-display);
+    font-size:16px;
+    margin-bottom:10px;
+  }
+  .step p{
+    color:var(--ink-soft);
+    font-size:15px;
+    max-width:32ch;
+  }
+
+  /* ============ TESTIMONIALS (index-card, slight tilt) ============ */
+  .testimonials{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:32px;
+  }
+  .tcard{
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:2px;
+    padding:28px 24px;
+    position:relative;
+    box-shadow:2px 3px 0 rgba(35,43,34,0.06);
+  }
+  .tcard:nth-child(1){ transform:rotate(-1.1deg); }
+  .tcard:nth-child(2){ transform:rotate(0.6deg); }
+  .tcard:nth-child(3){ transform:rotate(-0.4deg); }
+
+  .tape{
+    position:absolute;
+    top:-10px; left:24px;
+    width:46px; height:16px;
+    background:rgba(226,131,107,0.55);
+    transform:rotate(-3deg);
+  }
+
+  .tquote{
+    font-size:15px;
+    color:var(--ink);
+    margin-bottom:18px;
+  }
+  .tname{
+    font-family:var(--font-display);
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+
+  /* ============ FINAL CTA ============ */
+  .final-cta{
+    text-align:center;
+    padding:100px 0;
+    border-top:1px solid var(--rule);
+  }
+  .final-cta h2{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:clamp(28px,4vw,42px);
+    max-width:16ch;
+    margin:0 auto 28px;
+    line-height:1.15;
+  }
+
+  /* ============ FOOTER ============ */
+  footer{
+    background:var(--ink);
+    color:var(--paper);
+  }
+  .footer-inner{
+    padding:56px 0 36px;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:40px;
+  }
+  .footer-brand .logo{ color:var(--paper); }
+  .footer-brand p{
+    color:#9BA893;
+    font-size:14px;
+    margin-top:10px;
+    max-width:32ch;
+  }
+  .footer-cols{
+    display:flex;
+    gap:64px;
+    flex-wrap:wrap;
+  }
+  .footer-col h4{
+    font-family:var(--font-display);
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:#9BA893;
+    margin-bottom:16px;
+  }
+  .footer-col a{
+    display:block;
+    font-size:14px;
+    color:var(--paper);
+    margin-bottom:10px;
+    opacity:0.9;
+  }
+  .footer-col a:hover{ opacity:1; text-decoration:underline; }
+
+  .footer-bottom{
+    border-top:1px solid rgba(234,238,225,0.15);
+    padding:22px 0;
+    display:flex;
+    justify-content:space-between;
+    font-size:13px;
+    color:#9BA893;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:900px){
+    .hero-inner{ grid-template-columns:1fr; gap:56px; }
+    .breathe-box{ order:-1; }
+    .features{ grid-template-columns:1fr 1fr; }
+    .feature:nth-child(2n){ border-right:none; }
+    .feature:nth-child(3n){ border-right:1px solid var(--rule); }
+    .feature:nth-last-child(-n+2){ }
+    .steps{ grid-template-columns:1fr; gap:36px; }
+    .steps::before{ display:none; }
+    .testimonials{ grid-template-columns:1fr; }
+  }
+
+  @media (max-width:640px){
+    .wrap{ padding:0 20px; }
+    .nav-inner{ padding:16px 20px; }
+    nav.links{ display:none; }
+    .hero{ padding:56px 0 64px; }
+    .section{ padding:64px 0; }
+    .features{ grid-template-columns:1fr; }
+    .feature{ border-right:none !important; }
+    p.sub{ font-size:16px; }
+  }
+
+</style>
+</head>
+<body>
+
+  <header class="site-nav">
+    <div class="nav-inner">
+      <a href="#top" class="logo"><span class="dot"></span>CalmDesk</a>
+      <nav class="links">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="#testimonials">Students say</a>
+      </nav>
+      <a href="#get-started" class="nav-cta">Get started</a>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ================= HERO ================= -->
+    <section class="hero">
+      <div class="wrap hero-inner">
+        <div>
+          <p class="eyebrow">// for exam season, specifically</p>
+          <h1 class="headline">Study without <span class="mark">the spiral.</span></h1>
+          <p class="sub">CalmDesk pairs your study timer with short breathing resets and honest mood check-ins, so exam season stops feeling like a countdown to panic.</p>
+          <div class="cta-row">
+            <a href="#get-started" class="btn-primary">Start your first session</a>
+            <span class="cta-note">No sign-up required to try it</span>
+          </div>
+        </div>
+
+        <div class="breathe-box">
+          <div class="breathe-ring-wrap">
+            <div class="ring r1"></div>
+            <div class="ring r2"></div>
+            <div class="breathe-core"></div>
+          </div>
+          <div class="breathe-label">
+            <span class="in">Breathe in</span>
+            <span class="out">Breathe out</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FEATURES ================= -->
+    <section class="section" id="features">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">What you get</p>
+          <h2>Three things, done properly — not a whole productivity suite.</h2>
+          <p>CalmDesk stays small on purpose. Every feature exists to get you through a study block without burning out before the exam does.</p>
+        </div>
+
+        <div class="features">
+          <div class="feature">
+            <div class="feature-icon">⏱</div>
+            <h3>Study timer</h3>
+            <p>Set focused blocks with breaks built in from the start, so you stop working past the point of actually retaining anything.</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">◐</div>
+            <h3>Mood check-ins</h3>
+            <p>A ten-second tap before and after each session tracks how you're really doing — not just how many hours you logged.</p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">〜</div>
+            <h3>Breathing breaks</h3>
+            <p>Guided sixty-second resets between sessions, built from breathing techniques counselors actually recommend.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= HOW IT WORKS ================= -->
+    <section class="section how" id="how">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">How it works</p>
+          <h2>Three steps, every session.</h2>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <h3>Set a session</h3>
+            <p>Pick a subject and a focus length that matches your energy today, not an arbitrary hour.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <h3>Check in</h3>
+            <p>Rate your stress before you start. No journaling, no forms — just a tap.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <h3>Breathe, then go</h3>
+            <p>A short guided breath resets you before the timer even starts counting.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TESTIMONIALS ================= -->
+    <section class="section" id="testimonials">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Students say</p>
+          <h2>Built for the version of studying that actually happens.</h2>
+        </div>
+
+        <div class="testimonials">
+          <div class="tcard">
+            <div class="tape"></div>
+            <p class="tquote">"I stopped dreading my study blocks once I knew a break was actually coming."</p>
+            <p class="tname">— Ananya, B.Tech 3rd year</p>
+          </div>
+          <div class="tcard">
+            <div class="tape"></div>
+            <p class="tquote">"The breathing bit sounds silly until you're mid-panic before an exam and it actually helps."</p>
+            <p class="tname">— Rohit, final year</p>
+          </div>
+          <div class="tcard">
+            <div class="tape"></div>
+            <p class="tquote">"First app that tracked my mood instead of just my hours."</p>
+            <p class="tname">— Meher, 2nd year</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FINAL CTA ================= -->
+    <section class="final-cta" id="get-started">
+      <div class="wrap">
+        <h2>Your next study block doesn't have to feel like a countdown.</h2>
+        <a href="#top" class="btn-primary">Start your first session</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <div class="footer-brand">
+        <a href="#top" class="logo"><span class="dot"></span>CalmDesk</a>
+        <p>A small, focused study companion built for exam season — not another all-in-one productivity app.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="#features">Features</a>
+          <a href="#how">How it works</a>
+          <a href="#testimonials">Students say</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <a href="mailto:hello@calmdesk.app">hello@calmdesk.app</a>
+          <a href="#">Instagram</a>
+          <a href="#">Twitter / X</a>
+        </div>
+      </div>
+    </div>
+    <div class="wrap footer-bottom">
+      <span>© 2026 CalmDesk. Built as a student project.</span>
+      <span>Made with care, not a template.</span>
+    </div>
+  </footer>
+
+</body>
+</html>
