@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daisy Deka — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  /* ============ TOKENS ============ */
+  :root{
+    --paper:      #F6F4EF;
+    --paper-dim:  #ECE8DF;
+    --ink:        #16302C;
+    --ink-soft:   #4C625D;
+    --pulse:      #E2543F;
+    --tag-bg:     #DCE8E4;
+    --tag-text:   #1F4A43;
+    --rule:       #D4D0C4;
+    --card:       #FDFCF9;
+
+    --font-display: 'Fraunces', serif;
+    --font-body: 'IBM Plex Sans', sans-serif;
+
+    --maxw: 1080px;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+  img, svg{ display:block; max-width:100%; }
+
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 32px; }
+
+  /* ============ NAV ============ */
+  header.site-nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(246,244,239,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--rule);
+  }
+  .nav-inner{
+    max-width:var(--maxw); margin:0 auto; padding:20px 32px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .wordmark{
+    font-family:var(--font-display);
+    font-weight:600; font-size:20px;
+  }
+  nav.links{ display:flex; gap:32px; font-size:15px; }
+  nav.links a{
+    position:relative; padding-bottom:3px; color:var(--ink-soft);
+  }
+  nav.links a.active{ color:var(--ink); }
+  nav.links a::after{
+    content:""; position:absolute; left:0; right:0; bottom:0;
+    height:2px; background:var(--pulse);
+    transform:scaleX(0); transform-origin:left; transition:transform .2s ease;
+  }
+  nav.links a.active::after,
+  nav.links a:hover::after{ transform:scaleX(1); }
+
+  /* ============ HERO ============ */
+  .hero{ padding:96px 0 88px; position:relative; overflow:hidden; }
+  .hero-inner{
+    display:grid; grid-template-columns:1.3fr 0.7fr;
+    gap:56px; align-items:center; position:relative; z-index:2;
+  }
+
+  .role-tag{
+    display:inline-block;
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-bottom:16px;
+  }
+
+  h1.name{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:clamp(44px, 6vw, 72px);
+    line-height:1.05;
+    letter-spacing:-0.01em;
+    margin-bottom:16px;
+  }
+
+  p.tagline{
+    font-size:18px;
+    color:var(--ink-soft);
+    max-width:46ch;
+    margin-bottom:28px;
+  }
+
+  .quick-links{
+    display:flex; gap:24px; flex-wrap:wrap; font-size:15px;
+  }
+  .quick-links a{
+    display:flex; align-items:center; gap:8px;
+    border-bottom:1px solid var(--rule);
+    padding-bottom:2px;
+  }
+  .quick-links a:hover{ border-color:var(--ink); }
+  .quick-links svg{ width:16px; height:16px; }
+
+  /* --- avatar + ECG signature --- */
+  .avatar-wrap{
+    position:relative;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .avatar{
+    width:190px; height:190px; border-radius:50%;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:56px;
+    display:flex; align-items:center; justify-content:center;
+    position:relative; z-index:2;
+  }
+
+  .ecg-line{
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:340px; height:110px;
+    z-index:1;
+    opacity:0.9;
+  }
+  .ecg-line path{
+    fill:none;
+    stroke:var(--pulse);
+    stroke-width:2.5;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-dasharray:900;
+    stroke-dashoffset:900;
+    animation:draw-ecg 2.6s ease-out 0.3s forwards;
+  }
+  @keyframes draw-ecg{
+    to{ stroke-dashoffset:0; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ecg-line path{ animation:none; stroke-dashoffset:0; }
+  }
+
+  /* ============ SECTION HEADS ============ */
+  .section{ padding:80px 0; border-top:1px solid var(--rule); }
+  .section-label{
+    font-size:14px;
+    color:var(--pulse);
+    font-weight:500;
+    margin-bottom:10px;
+  }
+  .section h2{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:clamp(28px, 3.2vw, 36px);
+    margin-bottom:36px;
+  }
+
+  /* ============ ABOUT ============ */
+  .about-grid{
+    display:grid;
+    grid-template-columns:1.4fr 1fr;
+    gap:56px;
+    align-items:start;
+  }
+  .about-grid p{
+    font-size:17px;
+    color:var(--ink-soft);
+    max-width:62ch;
+  }
+  .stat-panel{
+    background:var(--card);
+    border:1px solid var(--rule);
+    padding:24px 26px;
+  }
+  .stat-panel .stat{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:12px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  .stat-panel .stat:last-child{ border-bottom:none; }
+  .stat-label{ font-size:14px; color:var(--ink-soft); }
+  .stat-value{ font-size:15px; font-weight:600; text-align:right; }
+
+  /* ============ SKILLS ============ */
+  .skill-groups{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:32px;
+  }
+  .skill-group h3{
+    font-size:16px;
+    font-weight:600;
+    margin-bottom:14px;
+  }
+  .tag-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .tag{
+    background:var(--tag-bg);
+    color:var(--tag-text);
+    font-size:13.5px;
+    padding:6px 12px;
+    border-radius:3px;
+  }
+
+  /* ============ PROJECTS ============ */
+  .project-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:24px;
+  }
+  .project-card{
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-top:3px solid var(--ink);
+    padding:28px 26px;
+    display:flex; flex-direction:column;
+  }
+  .project-card h3{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:19px;
+    margin-bottom:10px;
+  }
+  .project-card p{
+    font-size:14.5px;
+    color:var(--ink-soft);
+    margin-bottom:18px;
+    flex-grow:1;
+  }
+  .project-tags{
+    display:flex; flex-wrap:wrap; gap:6px;
+    margin-bottom:18px;
+  }
+  .project-tags span{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border:1px solid var(--rule);
+    padding:3px 9px;
+    border-radius:3px;
+  }
+  .project-link{
+    font-size:14px;
+    font-weight:500;
+    border-bottom:1px solid var(--ink);
+    align-self:flex-start;
+  }
+  .project-link:hover{ color:var(--pulse); border-color:var(--pulse); }
+
+  /* ============ CONTACT ============ */
+  .contact-box{
+    background:var(--ink);
+    color:var(--paper);
+    padding:56px 48px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:32px;
+  }
+  .contact-box h2{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:clamp(26px, 3vw, 34px);
+    max-width:14ch;
+  }
+  .contact-links{
+    display:flex; flex-direction:column; gap:14px;
+    font-size:16px;
+  }
+  .contact-links a{
+    display:flex; align-items:center; gap:10px;
+    border-bottom:1px solid rgba(246,244,239,0.25);
+    padding-bottom:4px;
+  }
+  .contact-links a:hover{ border-color:var(--pulse); color:var(--pulse); }
+  .contact-links svg{ width:18px; height:18px; }
+
+  /* ============ FOOTER ============ */
+  footer{
+    padding:32px 0;
+    text-align:center;
+    font-size:13.5px;
+    color:var(--ink-soft);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:900px){
+    .hero-inner{ grid-template-columns:1fr; gap:40px; }
+    .avatar-wrap{ order:-1; }
+    .about-grid{ grid-template-columns:1fr; }
+    .skill-groups{ grid-template-columns:1fr 1fr; }
+    .project-grid{ grid-template-columns:1fr; }
+    .contact-box{ flex-direction:column; align-items:flex-start; text-align:left; }
+  }
+
+  @media (max-width:640px){
+    .wrap{ padding:0 20px; }
+    .nav-inner{ padding:16px 20px; }
+    nav.links{ gap:18px; font-size:14px; }
+    .hero{ padding:64px 0 56px; }
+    .section{ padding:56px 0; }
+    .skill-groups{ grid-template-columns:1fr; }
+    .avatar{ width:150px; height:150px; font-size:44px; }
+    .ecg-line{ width:260px; height:90px; }
+    .contact-box{ padding:40px 28px; }
+  }
+
+</style>
+</head>
+<body>
+
+  <header class="site-nav">
+    <div class="nav-inner">
+      <a href="#top" class="wordmark">Daisy Deka</a>
+      <nav class="links" id="nav-links">
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ================= HERO ================= -->
+    <section class="hero">
+      <div class="wrap hero-inner">
+        <div>
+          <span class="role-tag">B.Tech CSE Student, VIT Bhopal · Specialization in Health Informatics</span>
+          <h1 class="name">Daisy Deka</h1>
+          <p class="tagline">I build machine learning systems for healthcare — from diagnostic models to the data pipelines underneath them — and occasionally full-stack apps when the problem calls for it.</p>
+          <div class="quick-links">
+            <a href="mailto:daisy.deka@example.com">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
+              daisy.deka@example.com
+            </a>
+            <a href="https://github.com/Daisy-Deka" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-1.04-.01-1.89-2.78.62-3.37-1.22-3.37-1.22-.45-1.18-1.11-1.5-1.11-1.5-.9-.63.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.72 0 0 .84-.27 2.75 1.05a9.4 9.4 0 0 1 5 0c1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.46.1 2.72.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
+              github.com/Daisy-Deka
+            </a>
+          </div>
+        </div>
+
+        <div class="avatar-wrap">
+          <svg class="ecg-line" viewBox="0 0 340 110" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 55 L70 55 L85 20 L100 90 L115 55 L145 55 L155 40 L165 55 L200 55 L215 10 L232 100 L248 55 L340 55" />
+          </svg>
+          <div class="avatar">DD</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ABOUT ================= -->
+    <section class="section" id="about">
+      <div class="wrap">
+        <p class="section-label">About</p>
+        <h2>Where I'm coming from</h2>
+        <div class="about-grid">
+          <p>I'm a final-year Computer Science student at VIT Bhopal, and most of my project work sits at the intersection of AI/ML and healthcare — models that predict, diagnose, or screen, and the unglamorous data work that has to happen before any of that is trustworthy. I've published research on one of those projects, and I'm currently working on a skin-lesion screening app where I own the dataset pipeline end to end. Outside of healthcare AI, I've also built a full-stack ticketing system just to make sure I'm not a one-trick specialist.</p>
+          <div class="stat-panel">
+            <div class="stat"><span class="stat-label">CGPA</span><span class="stat-value">8.32</span></div>
+            <div class="stat"><span class="stat-label">Graduating</span><span class="stat-value">2027</span></div>
+            <div class="stat"><span class="stat-label">Certification</span><span class="stat-value">AWS Certified Solutions Architect</span></div>
+            <div class="stat"><span class="stat-label">Certification</span><span class="stat-value">Applied ML in Python (Coursera)</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SKILLS ================= -->
+    <section class="section" id="skills">
+      <div class="wrap">
+        <p class="section-label">Skills</p>
+        <h2>What I actually work with</h2>
+        <div class="skill-groups">
+          <div class="skill-group">
+            <h3>Languages</h3>
+            <div class="tag-row">
+              <span class="tag">Python</span>
+              <span class="tag">Java</span>
+              <span class="tag">C++</span>
+              <span class="tag">Dart</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h3>ML &amp; data</h3>
+            <div class="tag-row">
+              <span class="tag">scikit-learn</span>
+              <span class="tag">SVM</span>
+              <span class="tag">Deep learning</span>
+              <span class="tag">LLM APIs</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h3>Mobile &amp; cloud</h3>
+            <div class="tag-row">
+              <span class="tag">Flutter</span>
+              <span class="tag">AWS</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h3>Tools</h3>
+            <div class="tag-row">
+              <span class="tag">Git / GitHub</span>
+              <span class="tag">MySQL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PROJECTS ================= -->
+    <section class="section" id="projects">
+      <div class="wrap">
+        <p class="section-label">Projects</p>
+        <h2>A few things I've built</h2>
+        <div class="project-grid">
+
+          <div class="project-card">
+            <h3>Blood Group Detection Using Fingerprint</h3>
+            <p>An SVM classifier that predicts blood group from fingerprint patterns, reaching 82% accuracy. Published in IEEE Xplore.</p>
+            <div class="project-tags"><span>Python</span><span>SVM</span><span>scikit-learn</span></div>
+            <a href="#" class="project-link">View on GitHub →</a>
+          </div>
+
+          <div class="project-card">
+            <h3>Cancer Detection via Chromosomal &amp; Gene Analysis</h3>
+            <p>An ML/DL diagnostic pipeline paired with an LLM-powered chatbot, so results come with a plain-language explanation instead of just a raw score.</p>
+            <div class="project-tags"><span>Python</span><span>Deep learning</span><span>LLM API</span></div>
+            <a href="#" class="project-link">View on GitHub →</a>
+          </div>
+
+          <div class="project-card">
+            <h3>Smart Healthcare: Multi-Disease Diagnosis</h3>
+            <p>An SVM-based platform that screens for multiple conditions from a single set of inputs, built to replace a stack of separate single-disease tools.</p>
+            <div class="project-tags"><span>Python</span><span>SVM</span><span>ML</span></div>
+            <a href="#" class="project-link">View on GitHub →</a>
+          </div>
+
+          <div class="project-card">
+            <h3>Scan4Disease — Skin Lesion Screening App</h3>
+            <p>A group project building an AI-powered screening app. I own the dataset pipeline: merging HAM10000 and PAD-UFES-20, class mapping, and leakage-safe splitting.</p>
+            <div class="project-tags"><span>Python</span><span>Data engineering</span><span>Mobile</span></div>
+            <a href="#" class="project-link">View on GitHub →</a>
+          </div>
+
+          <div class="project-card">
+            <h3>HelpDesk Management System</h3>
+            <p>A full-stack ticketing system built from scratch for a university assignment, with test coverage baked in from the start rather than bolted on after.</p>
+            <div class="project-tags"><span>ASP.NET Core</span><span>SQL Server</span><span>xUnit / Moq</span></div>
+            <a href="#" class="project-link">View on GitHub →</a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CONTACT ================= -->
+    <section class="section" id="contact">
+      <div class="wrap">
+        <div class="contact-box">
+          <h2>Let's talk.</h2>
+          <div class="contact-links">
+            <a href="mailto:daisy.deka@example.com">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
+              daisy.deka@example.com
+            </a>
+            <a href="https://github.com/Daisy-Deka" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-1.04-.01-1.89-2.78.62-3.37-1.22-3.37-1.22-.45-1.18-1.11-1.5-1.11-1.5-.9-.63.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.72 0 0 .84-.27 2.75 1.05a9.4 9.4 0 0 1 5 0c1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.46.1 2.72.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
+              GitHub
+            </a>
+            <a href="#" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 5a2 2 0 1 1-4-.002 2 2 0 0 1 4 .002ZM7 8.48H3V21h4V8.48Zm6.32 0H9.34V21h3.94v-6.57c0-3.66 4.77-3.96 4.77 0V21H22v-7.93c0-6.17-7.06-5.94-8.68-2.91V8.48Z"/></svg>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    © 2026 Daisy Deka. Built with HTML5 &amp; CSS3.
+  </footer>
+
+  <script>
+    // Optional enhancement: highlight the active nav link while scrolling
+    const sections = document.querySelectorAll('main section[id]');
+    const navLinks = document.querySelectorAll('#nav-links a');
+    const setActive = (id) => {
+      navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + id));
+    };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    sections.forEach(s => observer.observe(s));
+  </script>
+
+</body>
+</html>
