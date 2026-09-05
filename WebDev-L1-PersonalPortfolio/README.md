@@ -33,12 +33,12 @@ Since most of my project work sits at the intersection of AI/ML and healthcare, 
 - [x] Consistent branding (colour scheme and font family) throughout
 - [x] Fully responsive — nav, hero, skills grid, and project grid all reflow for mobile widths
 
-## Before you consider this final
+## About the project links
 
-A few placeholders need to be swapped for the real thing:
-- **Email:** currently `daisy.deka@example.com` — replace with your actual email in both the hero and contact section
-- **LinkedIn link:** currently a `#` placeholder — replace with your actual profile URL
-- **Project GitHub links:** currently `#` placeholders — replace each with the actual repo URL once pushed
+Email and LinkedIn are filled in with real values. Of the 5 projects listed:
+- **HelpDesk Management System** links to its own repo
+- **Blood Group Detection**, **Smart Healthcare: Multi-Disease Diagnosis**, and **Scan4Disease** link to their real repos (collaborator/group projects)
+- **Cancer Detection via Chromosomal & Gene Analysis** isn't pushed to GitHub yet, so its card shows "Repository not yet public" instead of a dead link — update this once it's pushed
 
 ## Folder Structure (per OIBSIP guidelines)
 
