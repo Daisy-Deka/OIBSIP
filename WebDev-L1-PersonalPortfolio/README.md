@@ -1,44 +1,37 @@
-# Daisy Deka — Personal Portfolio (OIBSIP Web Dev, Level 1, Task 2)
+# My Personal Portfolio (OIBSIP Web Dev, Level 1, Task 2)
 
-A single-page personal portfolio built as my digital résumé — profile, background, skills, and real project work, all in one place.
+This is my personal portfolio — my digital résumé. I built it to bring together who I am, what I actually work with, and the real projects I've put time into, all in one place instead of scattered across a résumé, GitHub, and LinkedIn.
 
 ## Live Preview
 
-Open `index.html` directly in any browser — no build step, no dependencies beyond a Google Fonts link.
+Just open `index.html` in any browser. No build step, no dependencies beyond a Google Fonts link.
 
 ## Tech Stack
 
 - HTML5
 - CSS3 (Flexbox + Grid)
-- A small amount of vanilla JavaScript (optional enhancement only — highlights the active nav link while scrolling via `IntersectionObserver`; the page works fully without it)
-- Google Fonts: Fraunces (display) + IBM Plex Sans (body)
+- A small bit of vanilla JavaScript — purely optional, it just highlights whichever section you're scrolled into on the nav bar. The page works completely fine without it.
+- Google Fonts: Fraunces (for my name and headings) + IBM Plex Sans (for body text)
 
-## Design Concept
+## Why it looks the way it does
 
-Since most of my project work sits at the intersection of AI/ML and healthcare, the visual direction leans into that world without being literal about it:
+Most of my project work sits at the intersection of AI/ML and healthcare, so I wanted the site to feel a little like that world without being on-the-nose about it. I went with a clinical colour palette — soft paper background, deep teal ink, one coral-red accent — and the one signature touch on the page is a pulse/ECG line that draws itself once behind my avatar when the page loads. I didn't want it looping forever and becoming background noise; it happens once, like a real reading, and then it's done.
 
-- **Palette:** clinical paper background, deep teal-charcoal ink, a single coral-red accent reserved for one signature moment and link hovers.
-- **Signature element:** a pulse/ECG line that draws itself once behind the avatar on page load — a single deliberate animation rather than scattered hover effects.
-- **Typography:** Fraunces (a distinctive serif) for my name and headings, paired with IBM Plex Sans for body text — two clearly distinct families, no monospace data labels.
-- **Structure:** an "at-a-glance" stat panel next to the About text (CGPA, graduation year, certifications) and project cards with a simple top-accent instead of the generic rounded-card-with-shadow treatment.
+For type, I paired Fraunces (a serif with a bit of personality) for headings with IBM Plex Sans for everything else. No monospace labels, no all-caps section headers — I wanted it to read like a person, not a dashboard.
 
-## Feature Checklist (per task requirements)
+## What's on the page
 
-- [x] Profile/hero section: name, role title, and an avatar placeholder (initials, since no photo was supplied)
-- [x] About Me section: background and interests, in first person
-- [x] Skills section: categorized visual grid (Languages, ML & Data, Mobile & Cloud, Tools)
-- [x] Projects section: 5 real project cards (title, description, tech tags, GitHub link placeholder)
-- [x] Contact section: name, email, GitHub and LinkedIn links
-- [x] Smooth scroll navigation between sections (native CSS `scroll-behavior: smooth`)
-- [x] Consistent branding (colour scheme and font family) throughout
-- [x] Fully responsive — nav, hero, skills grid, and project grid all reflow for mobile widths
+- **Hero** — my name, what I study and specialise in, and a short line about what I actually do
+- **About** — a couple of sentences on my background, next to a small stat panel (CGPA, graduation year, certifications)
+- **Skills** — grouped by category (Languages, ML & Data, Mobile & Cloud, Tools) instead of one long undifferentiated list
+- **Projects** — five real projects I've worked on, each linking to its actual GitHub repo where one exists
+- **Contact** — my email, GitHub, and LinkedIn
 
 ## About the project links
 
-Email and LinkedIn are filled in with real values. Of the 5 projects listed:
-- **HelpDesk Management System** links to its own repo
-- **Blood Group Detection**, **Smart Healthcare: Multi-Disease Diagnosis**, and **Scan4Disease** link to their real repos (collaborator/group projects)
-- **Cancer Detection via Chromosomal & Gene Analysis** isn't pushed to GitHub yet, so its card shows "Repository not yet public" instead of a dead link — update this once it's pushed
+My email and LinkedIn are the real ones. Of the five projects:
+- **HelpDesk Management System** links to my own repo
+- **Blood Group Detection**, **Smart Healthcare: Multi-Disease Diagnosis**, **Scan4Disease**, and **DeepScope** are all collaborator/group projects, so they link out to the repo owner's GitHub
 
 ## Folder Structure (per OIBSIP guidelines)
 
@@ -50,4 +43,4 @@ OIBSIP/WebDev-L1-PersonalPortfolio/
 
 ## Notes
 
-Built from scratch — layout, copy, and visual direction are original to this project (no template or existing portfolio was copied). Visual inspiration was drawn only at a principles level, per the task's self-sourcing guideline.
+Built from scratch — the layout, the copy, all of it is mine. I looked at portfolio design principles for inspiration (per the task's self-sourcing guideline) but didn't copy any existing site or template.
