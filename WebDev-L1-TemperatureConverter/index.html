@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Temperature Converter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --bg:        #101317;
+    --bg-2:      #0B0D10;
+    --panel:     #1B1F24;
+    --panel-2:   #23282E;
+    --panel-hi:  #2C323A;
+    --text:      #ECEAE3;
+    --text-dim:  #8B9198;
+    --amber:     #F2A340;
+    --amber-glow: rgba(242,163,64,0.35);
+    --blue:      #5FA8D3;
+    --red:       #E2544A;
+    --error:     #E2544A;
+    --border:    #2E3338;
+    --border-hi: #3A414A;
+
+    --font-ui: 'Space Grotesk', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  body{
+    background:
+      radial-gradient(circle at 50% 0%, #1A1E24 0%, var(--bg) 45%, var(--bg-2) 100%);
+    background-attachment:fixed;
+    color:var(--text);
+    font-family:var(--font-ui);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
+    line-height:1.5;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* subtle blueprint-style grid texture */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size:36px 36px;
+    pointer-events:none;
+    mask-image:radial-gradient(ellipse at 50% 30%, black 0%, transparent 75%);
+  }
+
+  .page{
+    width:100%;
+    max-width:460px;
+    position:relative;
+    z-index:1;
+  }
+
+  .heading{
+    text-align:center;
+    margin-bottom:30px;
+  }
+  .heading .eyebrow-icon{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:44px; height:44px;
+    border-radius:12px;
+    background:linear-gradient(160deg, var(--panel-2), var(--panel));
+    border:1px solid var(--border-hi);
+    margin-bottom:14px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .heading h1{
+    font-size:29px;
+    font-weight:700;
+    letter-spacing:-0.015em;
+  }
+  .heading p{
+    color:var(--text-dim);
+    font-size:14.5px;
+    margin-top:7px;
+  }
+
+  .panel{
+    background:linear-gradient(165deg, var(--panel), var(--panel) 60%, #191D22);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:30px 28px;
+    box-shadow:
+      0 20px 60px -12px rgba(0,0,0,0.55),
+      0 4px 16px rgba(0,0,0,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.04);
+    position:relative;
+  }
+
+  /* --- thermometer signature element --- */
+  .thermo-row{
+    display:flex;
+    align-items:center;
+    gap:22px;
+    margin-bottom:28px;
+    padding-bottom:26px;
+    border-bottom:1px solid var(--border);
+  }
+
+  .thermo-shell{
+    width:24px;
+    height:140px;
+    border-radius:12px;
+    background:linear-gradient(90deg, #15181C, #1D2125 45%, #15181C);
+    border:1px solid var(--border-hi);
+    position:relative;
+    overflow:hidden;
+    flex-shrink:0;
+    box-shadow:inset 0 2px 6px rgba(0,0,0,0.5);
+  }
+  .thermo-ticks{
+    position:absolute;
+    top:8px; bottom:26px; left:3px;
+    width:5px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .thermo-ticks span{
+    width:100%; height:1px;
+    background:rgba(255,255,255,0.14);
+  }
+  .thermo-fill{
+    position:absolute;
+    bottom:0; left:0; right:0;
+    height:8%;
+    background:linear-gradient(180deg, var(--blue), #3C7FA8);
+    border-radius:0 0 12px 12px;
+    transition:height 0.7s cubic-bezier(.34,1.2,.64,1), background 0.7s ease;
+    box-shadow:0 0 16px 2px var(--amber-glow);
+  }
+  .thermo-shine{
+    position:absolute;
+    top:0; bottom:0; left:3px;
+    width:4px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.02));
+    border-radius:4px;
+  }
+  .thermo-bulb{
+    position:absolute;
+    bottom:-8px; left:50%;
+    transform:translateX(-50%);
+    width:32px; height:32px;
+    border-radius:50%;
+    background:radial-gradient(circle at 32% 28%, #7FC1E8, var(--blue) 70%);
+    border:1px solid var(--border-hi);
+    transition:background 0.7s ease, box-shadow 0.7s ease;
+    box-shadow:0 0 0px 0px transparent;
+  }
+
+  .thermo-readout{
+    flex-grow:1;
+  }
+  .thermo-readout .label{
+    font-size:12px;
+    color:var(--text-dim);
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    margin-bottom:6px;
+  }
+  .thermo-readout .big-value{
+    font-family:var(--font-mono);
+    font-size:36px;
+    font-weight:600;
+    color:var(--amber);
+    letter-spacing:-0.01em;
+    text-shadow:0 0 24px var(--amber-glow);
+    transition:color 0.7s ease, text-shadow 0.7s ease;
+  }
+  .thermo-readout .big-value .unit{
+    font-size:18px;
+    color:var(--text-dim);
+    margin-left:3px;
+    text-shadow:none;
+  }
+
+  /* --- form --- */
+  .field-group{ margin-bottom:20px; }
+  label{
+    display:block;
+    font-size:13px;
+    color:var(--text-dim);
+    margin-bottom:9px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+  }
+
+  input[type="text"]{
+    width:100%;
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    color:var(--text);
+    font-family:var(--font-mono);
+    font-size:18px;
+    padding:13px 15px;
+    border-radius:8px;
+    outline:none;
+    transition:border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  input[type="text"]::placeholder{ color:#565D64; }
+  input[type="text"]:focus{
+    border-color:var(--amber);
+    box-shadow:0 0 0 3px rgba(242,163,64,0.14);
+  }
+  input[type="text"].invalid{
+    border-color:var(--error);
+    box-shadow:0 0 0 3px rgba(226,84,74,0.14);
+  }
+
+  .unit-select{
+    display:flex;
+    gap:8px;
+  }
+  .unit-select input[type="radio"]{ display:none; }
+  .unit-select label{
+    flex:1;
+    text-align:center;
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    color:var(--text-dim);
+    font-size:14px;
+    font-weight:500;
+    text-transform:none;
+    letter-spacing:0;
+    padding:11px 0;
+    border-radius:8px;
+    cursor:pointer;
+    transition:all 0.15s ease;
+    margin-bottom:0;
+  }
+  .unit-select label:hover{ border-color:var(--border-hi); color:var(--text); }
+  .unit-select input[type="radio"]:checked + label{
+    background:linear-gradient(160deg, rgba(242,163,64,0.16), rgba(242,163,64,0.06));
+    border-color:var(--amber);
+    color:var(--amber);
+    box-shadow:0 0 0 1px rgba(242,163,64,0.2), 0 4px 12px -4px rgba(242,163,64,0.3);
+  }
+
+  .error-msg{
+    display:none;
+    background:rgba(226,84,74,0.1);
+    border:1px solid rgba(226,84,74,0.4);
+    color:#F0958D;
+    font-size:13.5px;
+    padding:12px 15px;
+    border-radius:8px;
+    margin-bottom:20px;
+  }
+  .error-msg.show{ display:block; animation:shake 0.4s ease; }
+  @keyframes shake{
+    0%, 100%{ transform:translateX(0); }
+    25%{ transform:translateX(-4px); }
+    75%{ transform:translateX(4px); }
+  }
+
+  button.convert-btn{
+    width:100%;
+    background:linear-gradient(160deg, #F5B45E, var(--amber));
+    color:#1A1300;
+    font-family:var(--font-ui);
+    font-weight:700;
+    font-size:15.5px;
+    letter-spacing:0.01em;
+    border:none;
+    padding:14px 0;
+    border-radius:8px;
+    cursor:pointer;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow:0 8px 20px -6px rgba(242,163,64,0.5);
+  }
+  button.convert-btn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 10px 26px -6px rgba(242,163,64,0.65);
+  }
+  button.convert-btn:active{ transform:translateY(0); }
+
+  /* --- results --- */
+  .results{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:10px;
+    margin-top:24px;
+  }
+  .result-tile{
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:15px 8px;
+    text-align:center;
+    opacity:0.4;
+    transition:opacity 0.4s ease, border-color 0.4s ease, transform 0.2s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .result-tile::before{
+    content:"";
+    position:absolute;
+    top:0; left:0; right:0;
+    height:3px;
+    opacity:0;
+    transition:opacity 0.4s ease;
+  }
+  .result-tile.active{ opacity:1; }
+  .result-tile.active:hover{ transform:translateY(-2px); }
+  #tileC.active::before{ background:var(--blue); opacity:1; }
+  #tileF.active::before{ background:var(--amber); opacity:1; }
+  #tileK.active::before{ background:var(--red); opacity:1; }
+
+  .result-tile .tile-label{
+    font-size:11px;
+    color:var(--text-dim);
+    margin-bottom:7px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+  .result-tile .tile-value{
+    font-family:var(--font-mono);
+    font-size:17px;
+    font-weight:600;
+  }
+
+  footer{
+    text-align:center;
+    font-size:12.5px;
+    color:var(--text-dim);
+    margin-top:26px;
+  }
+
+  @media (max-width:420px){
+    .panel{ padding:24px 20px; }
+    .thermo-readout .big-value{ font-size:29px; }
+    .results{ gap:8px; }
+    .result-tile .tile-value{ font-size:14.5px; }
+  }
+
+</style>
+</head>
+<body>
+
+  <div class="page">
+    <div class="heading">
+      <div class="eyebrow-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F2A340" stroke-width="1.8">
+          <path d="M12 3v10.55a4 4 0 1 0 2 0V3h-2Z" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="13" cy="17" r="1.2" fill="#F2A340" stroke="none"/>
+        </svg>
+      </div>
+      <h1>Temperature Converter</h1>
+      <p>Enter a value, pick its unit, and convert.</p>
+    </div>
+
+    <div class="panel">
+
+      <div class="thermo-row">
+        <div class="thermo-shell">
+          <div class="thermo-ticks">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="thermo-fill" id="thermoFill"></div>
+          <div class="thermo-shine"></div>
+          <div class="thermo-bulb" id="thermoBulb"></div>
+        </div>
+        <div class="thermo-readout">
+          <div class="label">Last result</div>
+          <div class="big-value" id="bigValue">— <span class="unit" id="bigUnit">°C</span></div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="tempInput">Temperature value</label>
+        <input type="text" id="tempInput" inputmode="decimal" placeholder="e.g. 37">
+      </div>
+
+      <div class="field-group">
+        <label>Input unit</label>
+        <div class="unit-select">
+          <input type="radio" name="unit" id="unitC" value="C" checked>
+          <label for="unitC">Celsius</label>
+          <input type="radio" name="unit" id="unitF" value="F">
+          <label for="unitF">Fahrenheit</label>
+          <input type="radio" name="unit" id="unitK" value="K">
+          <label for="unitK">Kelvin</label>
+        </div>
+      </div>
+
+      <div class="error-msg" id="errorMsg"></div>
+
+      <button class="convert-btn" id="convertBtn">Convert</button>
+
+      <div class="results">
+        <div class="result-tile" id="tileC">
+          <div class="tile-label">Celsius</div>
+          <div class="tile-value" id="valueC">—</div>
+        </div>
+        <div class="result-tile" id="tileF">
+          <div class="tile-label">Fahrenheit</div>
+          <div class="tile-value" id="valueF">—</div>
+        </div>
+        <div class="result-tile" id="tileK">
+          <div class="tile-label">Kelvin</div>
+          <div class="tile-value" id="valueK">—</div>
+        </div>
+      </div>
+
+    </div>
+
+    <footer>Handles Celsius, Fahrenheit &amp; Kelvin — flags anything below absolute zero.</footer>
+  </div>
+
+<script>
+  const input = document.getElementById('tempInput');
+  const errorMsg = document.getElementById('errorMsg');
+  const convertBtn = document.getElementById('convertBtn');
+
+  const valueC = document.getElementById('valueC');
+  const valueF = document.getElementById('valueF');
+  const valueK = document.getElementById('valueK');
+  const tileC = document.getElementById('tileC');
+  const tileF = document.getElementById('tileF');
+  const tileK = document.getElementById('tileK');
+
+  const bigValue = document.getElementById('bigValue');
+  const thermoFill = document.getElementById('thermoFill');
+  const thermoBulb = document.getElementById('thermoBulb');
+
+  const ABSOLUTE_ZERO_C = -273.15;
+
+  function showError(message){
+    errorMsg.textContent = message;
+    errorMsg.classList.remove('show');
+    void errorMsg.offsetWidth; // restart shake animation
+    errorMsg.classList.add('show');
+    input.classList.add('invalid');
+    [tileC, tileF, tileK].forEach(t => t.classList.remove('active'));
+  }
+
+  function clearError(){
+    errorMsg.classList.remove('show');
+    errorMsg.textContent = '';
+    input.classList.remove('invalid');
+  }
+
+  input.addEventListener('input', () => {
+    const raw = input.value.trim();
+    if (raw === '') { clearError(); return; }
+    if (isNaN(raw) || raw === '-' || raw === '.') {
+      showError('Please enter a valid number.');
+    } else {
+      clearError();
+    }
+  });
+
+  function getSelectedUnit(){
+    return document.querySelector('input[name="unit"]:checked').value;
+  }
+
+  function toCelsius(value, unit){
+    if (unit === 'C') return value;
+    if (unit === 'F') return (value - 32) * 5 / 9;
+    if (unit === 'K') return value - 273.15;
+  }
+
+  function updateThermometer(celsius){
+    const clamped = Math.max(-50, Math.min(150, celsius));
+    const percent = ((clamped + 50) / 200) * 100;
+    thermoFill.style.height = percent + '%';
+
+    let color, glow;
+    if (celsius <= 0){ color = 'linear-gradient(180deg, #7FC1E8, #3C7FA8)'; glow = 'rgba(95,168,211,0.55)'; }
+    else if (celsius <= 37){ color = 'linear-gradient(180deg, #FBC97D, #D8862C)'; glow = 'rgba(242,163,64,0.55)'; }
+    else { color = 'linear-gradient(180deg, #F0857A, #C43A30)'; glow = 'rgba(226,84,74,0.55)'; }
+
+    thermoFill.style.background = color;
+    thermoFill.style.boxShadow = `0 0 18px 2px ${glow}`;
+    thermoBulb.style.background = `radial-gradient(circle at 32% 28%, #fff3, ${celsius <= 0 ? '#5FA8D3' : celsius <= 37 ? '#F2A340' : '#E2544A'} 70%)`;
+    thermoBulb.style.boxShadow = `0 0 20px 4px ${glow}`;
+
+    bigValue.style.color = celsius <= 0 ? '#7FC1E8' : celsius <= 37 ? '#F2A340' : '#F0857A';
+  }
+
+  // Animate a number counting from its current displayed value to a target
+  function animateValue(el, from, to, unitLabel, duration = 500){
+    const start = performance.now();
+    function tick(now){
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const current = from + (to - from) * eased;
+      el.textContent = current.toFixed(2) + ' ' + unitLabel;
+      if (t < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  let lastC = 0, lastF = 32, lastK = 273.15;
+
+  convertBtn.addEventListener('click', () => {
+    const raw = input.value.trim();
+
+    if (raw === '' || isNaN(raw) || raw === '-' || raw === '.') {
+      showError('Please enter a valid numeric temperature before converting.');
+      return;
+    }
+
+    const value = parseFloat(raw);
+    const unit = getSelectedUnit();
+    const celsius = toCelsius(value, unit);
+
+    if (celsius < ABSOLUTE_ZERO_C - 0.001) {
+      showError(`That's below absolute zero — nothing can get colder than ${ABSOLUTE_ZERO_C}°C (0 K). Try a valid temperature.`);
+      return;
+    }
+
+    clearError();
+
+    const fahrenheit = celsius * 9 / 5 + 32;
+    const kelvin = celsius + 273.15;
+
+    animateValue(valueC, lastC, celsius, '°C');
+    animateValue(valueF, lastF, fahrenheit, '°F');
+    animateValue(valueK, lastK, kelvin, 'K');
+    lastC = celsius; lastF = fahrenheit; lastK = kelvin;
+
+    [tileC, tileF, tileK].forEach(t => t.classList.add('active'));
+
+    bigValue.innerHTML = celsius.toFixed(1) + ' <span class="unit">°C</span>';
+    updateThermometer(celsius);
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') convertBtn.click();
+  });
+</script>
+
+</body>
+</html>
